@@ -1,28 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useMeasures } from '../useHooks/useMeasures';
 
-function MeasureSelector() {
-  const [measures, setMeasures] = useState([]);
-  const [selected, setSelected] = useState('');
+function MeasureSelector({
+  measures,
+  setMeasures,
+  prefixMap,
+  setPrefixMap,
+  selectedMeasure,
+  setSelectedMeasure,
+  setSelectedAggFunc,
+}) {
+  const { measures: fetchedMeasures } = useMeasures(prefixMap, setPrefixMap);
 
-  // useEffect(() => {
-  //   axios.get('/your-measure-sparql-endpoint').then((res) => {
-  //     const options = res.data.results.bindings.map((b) => b.measure.value);
-  //     setMeasures(options);
-  //   });
-  // }, []);
+  useEffect(() => {
+    if (Object.keys(fetchedMeasures).length > 0) {
+      setMeasures(fetchedMeasures);
+    }
+  }, [fetchedMeasures, setMeasures]);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setSelectedMeasure(value);
+    setSelectedAggFunc('sum');
+  };
 
   return (
     <div>
       <label className="block mb-1 font-medium">Measure</label>
       <select
-        value={selected}
-        onChange={(e) => setSelected(e.target.value)}
+        value={selectedMeasure}
+        onChange={handleChange}
         className="w-full border border-gray-300 rounded px-3 py-2"
       >
         <option value="">Select a measure</option>
-        {measures.map((measure) => (
-          <option key={measure} value={measure}>{measure}</option>
+        {Object.entries(measures).map(([uri, data]) => (
+          <option key={uri} value={uri}>
+            {data.prefix}:{uri.split(/[#/]/).pop()}
+          </option>
         ))}
       </select>
     </div>
