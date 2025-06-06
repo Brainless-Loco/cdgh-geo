@@ -1,4 +1,5 @@
 import React from 'react';
+import DatasetSelector from './DatasetSelector';
 import LevelSelector from './LevelSelector';
 import MeasureSelector from './MeasureSelector';
 import AggregationSelector from './AggregationSelector';
@@ -6,6 +7,8 @@ import LayerSelector from './LayerSelector';
 
 function Sidebar({
   onLayerChange,
+  selectedDataset,
+  setSelectedDataset,
   measures,
   setMeasures,
   prefixMap,
@@ -19,26 +22,36 @@ function Sidebar({
     <div className="flex flex-col gap-6">
       <h2 className="text-xl font-semibold">Map Controls</h2>
       <LayerSelector onChange={onLayerChange} />
-      <LevelSelector
+      <DatasetSelector
+        selectedDataset={selectedDataset}
+        setSelectedDataset={setSelectedDataset}
         prefixMap={prefixMap}
         setPrefixMap={setPrefixMap}
-        onLayerChange={onLayerChange}
       />
-      <MeasureSelector
-        measures={measures}
-        setMeasures={setMeasures}
-        prefixMap={prefixMap}
-        setPrefixMap={setPrefixMap}
-        selectedMeasure={selectedMeasure}
-        setSelectedMeasure={setSelectedMeasure}
-        setSelectedAggFunc={setSelectedAggFunc}
-      />
-      <AggregationSelector
-        measures={measures}
-        selectedMeasure={selectedMeasure}
-        selectedAggFunc={selectedAggFunc}
-        setSelectedAggFunc={setSelectedAggFunc}
-      />
+      {selectedDataset && (
+        <>
+          <LevelSelector
+            prefixMap={prefixMap}
+            setPrefixMap={setPrefixMap}
+            onLayerChange={onLayerChange}
+          />
+          <MeasureSelector
+            measures={measures}
+            setMeasures={setMeasures}
+            prefixMap={prefixMap}
+            setPrefixMap={setPrefixMap}
+            selectedMeasure={selectedMeasure}
+            setSelectedMeasure={setSelectedMeasure}
+            setSelectedAggFunc={setSelectedAggFunc}
+          />
+          <AggregationSelector
+            measures={measures}
+            selectedMeasure={selectedMeasure}
+            selectedAggFunc={selectedAggFunc}
+            setSelectedAggFunc={setSelectedAggFunc}
+          />
+        </>
+      )}
     </div>
   );
 }

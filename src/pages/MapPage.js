@@ -4,10 +4,17 @@ import Sidebar from '../components/MapPage/Sidebar';
 
 function MapPage() {
   const [selectedLayer, setSelectedLayer] = useState('');
-  const [measures, setMeasures] = useState({});
   const [prefixMap, setPrefixMap] = useState({});
-  const [selectedMeasure, setSelectedMeasure] = useState(''); // selected measure URI
-  const [selectedAggFunc, setSelectedAggFunc] = useState(''); // selected aggregation function URI
+  
+  const [selectedDataset, setSelectedDataset] = useState('');
+
+  const [measures, setMeasures] = useState({});
+  const [selectedMeasure, setSelectedMeasure] = useState('');
+
+  const [selectedAggFunc, setSelectedAggFunc] = useState('');
+
+
+
 
   return (
     <div className="flex h-screen">
@@ -17,6 +24,8 @@ function MapPage() {
       <div className="w-1/5 bg-gray-100 p-4">
         <Sidebar
           onLayerChange={setSelectedLayer}
+          selectedDataset={selectedDataset}
+          setSelectedDataset={setSelectedDataset}
           prefixMap={prefixMap}
           setPrefixMap={setPrefixMap}
           measures={measures}
