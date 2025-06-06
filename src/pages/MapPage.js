@@ -16,13 +16,20 @@ function MapPage() {
   const [selectedMeasure, setSelectedMeasure] = useState('');
 
   const [selectedAggFunc, setSelectedAggFunc] = useState('');
-  
-  
+
+
 
   return (
     <div className="flex h-screen">
       <div className="w-4/5">
-        <MapContainer selectedLayer={selectedLayer} />
+        <MapContainer
+          selectedLayer={selectedLayer}
+          selectedDataset={selectedDataset}
+          selectedGrographicLevel={selectedGrographicLevel}
+          selectedGrographicLevelAttribute={selectedGrographicLevelAttribute}
+          selectedMeasure={selectedMeasure}
+          selectedAggFunc={selectedAggFunc}
+        />
       </div>
       <div className="w-1/5 bg-gray-100 p-4">
         <Sidebar
