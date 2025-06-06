@@ -11,7 +11,8 @@ function MeasureSelector({
   setSelectedAggFunc,
   selectedDataset
 }) {
-  const { measures: fetchedMeasures } = useMeasures(prefixMap, setPrefixMap,selectedDataset);
+
+  const { measures:fetchedMeasures } = useMeasures(prefixMap, setPrefixMap,selectedDataset);
 
   useEffect(() => {
     if (Object.keys(fetchedMeasures).length > 0) {
@@ -24,6 +25,7 @@ function MeasureSelector({
     setSelectedMeasure(value);
     setSelectedAggFunc('sum');
   };
+
 
   return (
     <div>

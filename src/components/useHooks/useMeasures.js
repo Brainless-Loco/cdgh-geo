@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { queryVirtuoso } from './queryVirtuoso';
 
 
-const GRAPH_URI = process.env.REACT_APP_SPARQL_GRAPH;
+const TBOX = process.env.REACT_APP_TBOX_GRAPH;
 
 
 
@@ -14,7 +14,7 @@ export const useMeasures = (prefixMap, setPrefixMap, selectedDataset) => {
 PREFIX qb: <http://purl.org/linked-data/cube#>
 PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
 SELECT DISTINCT ?measure ?aggFunc
-FROM <${GRAPH_URI}>
+FROM <${TBOX}>
 WHERE {
   <${selectedDataset}> a qb:DataSet ;
            qb:structure ?cuboid .
@@ -24,8 +24,6 @@ WHERE {
 }
 ORDER BY ?measure ?aggFunc
 `;
-
-console.log(MEASURE_QUERY)
 
     useEffect(() => {
         const fetchMeasures = async () => {

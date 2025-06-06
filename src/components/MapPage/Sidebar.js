@@ -1,18 +1,27 @@
 import React from 'react';
 import DatasetSelector from './DatasetSelector';
-import LevelSelector from './LevelSelector';
+import GeographicLevelSelector from './GeographicLevelSelector';
 import MeasureSelector from './MeasureSelector';
 import AggregationSelector from './AggregationSelector';
 import LayerSelector from './LayerSelector';
 
 function Sidebar({
   onLayerChange,
-  selectedDataset,
-  setSelectedDataset,
-  measures,
-  setMeasures,
   prefixMap,
   setPrefixMap,
+  
+  measures,
+  setMeasures,
+
+  selectedDataset,
+  setSelectedDataset,
+
+  selectedGrographicLevel,
+  setSelectedGrographicLevel,
+
+  selectedGrographicLevelAttribute,
+  setSelectedGrographicLevelAttribute,
+
   selectedMeasure,
   setSelectedMeasure,
   selectedAggFunc,
@@ -30,18 +39,22 @@ function Sidebar({
       />
       {selectedDataset && (
         <>
-          <LevelSelector
+          <GeographicLevelSelector
             prefixMap={prefixMap}
             setPrefixMap={setPrefixMap}
             onLayerChange={onLayerChange}
             selectedDataset={selectedDataset}
+            selectedGrographicLevel={selectedGrographicLevel}
+            setSelectedGrographicLevel={setSelectedGrographicLevel}
+            selectedGrographicLevelAttribute={selectedGrographicLevelAttribute}
+            setSelectedGrographicLevelAttribute={setSelectedGrographicLevelAttribute}
           />
           <MeasureSelector
             selectedDataset={selectedDataset}
-            measures={measures}
-            setMeasures={setMeasures}
             prefixMap={prefixMap}
             setPrefixMap={setPrefixMap}
+            measures={measures}
+            setMeasures={setMeasures}
             selectedMeasure={selectedMeasure}
             setSelectedMeasure={setSelectedMeasure}
             setSelectedAggFunc={setSelectedAggFunc}

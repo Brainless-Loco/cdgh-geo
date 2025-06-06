@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { queryVirtuoso } from '../useHooks/queryVirtuoso';
 
+const TBOX = process.env.REACT_APP_TBOX_GRAPH
+
 const DATASET_QUERY = `
   PREFIX qb: <http://purl.org/linked-data/cube#>
   PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
@@ -8,7 +10,7 @@ const DATASET_QUERY = `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
   SELECT DISTINCT ?dataset
-  FROM <http://bike-csecu.com/datasets/diabatic/tbox>
+  FROM <${TBOX}>
   WHERE {
     ?dataset rdf:type qb:DataSet ;
              qb:structure ?cuboid .
@@ -45,6 +47,7 @@ function getOrAssignPrefix(prefixURI, prefixMap, setPrefixMap) {
 export function useDatasets(prefixMap, setPrefixMap) {
   const [datasets, setDatasets] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchDatasets = async () => {

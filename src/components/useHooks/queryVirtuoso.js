@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const SPARQL_ENDPOINT = 'http://localhost:5001/sparql';
 
 export const queryVirtuoso = async (sparqlQuery, options = {}) => {
