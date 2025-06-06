@@ -9,8 +9,9 @@ function MeasureSelector({
   selectedMeasure,
   setSelectedMeasure,
   setSelectedAggFunc,
+  selectedDataset
 }) {
-  const { measures: fetchedMeasures } = useMeasures(prefixMap, setPrefixMap);
+  const { measures: fetchedMeasures } = useMeasures(prefixMap, setPrefixMap,selectedDataset);
 
   useEffect(() => {
     if (Object.keys(fetchedMeasures).length > 0) {

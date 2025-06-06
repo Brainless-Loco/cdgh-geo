@@ -34,8 +34,10 @@ function Sidebar({
             prefixMap={prefixMap}
             setPrefixMap={setPrefixMap}
             onLayerChange={onLayerChange}
+            selectedDataset={selectedDataset}
           />
           <MeasureSelector
+            selectedDataset={selectedDataset}
             measures={measures}
             setMeasures={setMeasures}
             prefixMap={prefixMap}

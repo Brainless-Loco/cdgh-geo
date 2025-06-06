@@ -1,27 +1,31 @@
 import { useEffect, useState } from 'react';
-import { getPrefixFromUri } from './getPrefixFromUri';
 import { queryVirtuoso } from './queryVirtuoso';
 
-const GRAPH_URI = 'http://bike-csecu.com/datasets/diabatic/tbox';
 
-const MEASURE_QUERY = `
+const GRAPH_URI = process.env.REACT_APP_SPARQL_GRAPH;
+
+
+
+export const useMeasures = (prefixMap, setPrefixMap, selectedDataset) => {
+    const [measures, setMeasures] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    const MEASURE_QUERY = `
 PREFIX qb: <http://purl.org/linked-data/cube#>
 PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
 SELECT DISTINCT ?measure ?aggFunc
 FROM <${GRAPH_URI}>
 WHERE {
-  ?dataset a qb:DataSet ;
+  <${selectedDataset}> a qb:DataSet ;
            qb:structure ?cuboid .
   ?cuboid qb:component ?bnode .
   ?bnode qb:measure ?measure ;
          qb4o:aggregateFunction ?aggFunc .
 }
-ORDER BY ?measure
+ORDER BY ?measure ?aggFunc
 `;
 
-export const useMeasures = (prefixMap, setPrefixMap) => {
-    const [measures, setMeasures] = useState({});
-    const [loading, setLoading] = useState(true);
+console.log(MEASURE_QUERY)
 
     useEffect(() => {
         const fetchMeasures = async () => {
@@ -32,9 +36,11 @@ export const useMeasures = (prefixMap, setPrefixMap) => {
                 const updatedPrefixMap = { ...prefixMap };
 
                 const getPrefixedName = (uri) => {
+                    // eslint-disable-next-line
                     const match = uri.match(/^(.*[\/#])([^\/#]+)$/);
                     if (!match) return { prefix: '', value: uri };
-
+                    
+                    // eslint-disable-next-line
                     const [_, base, local] = match;
 
                     let existingPrefix = Object.entries(updatedPrefixMap).find(
@@ -90,7 +96,7 @@ export const useMeasures = (prefixMap, setPrefixMap) => {
         };
 
         fetchMeasures();
-    }, []);
+    }, [prefixMap,setPrefixMap, MEASURE_QUERY]);
 
 
 
