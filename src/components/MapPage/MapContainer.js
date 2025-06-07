@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 import stringSimilarity from 'string-similarity';
 import { queryVirtuoso } from '../useHooks/queryVirtuoso';
+// eslint-disable-next-line
 import BasicMap from './BasicMap';
 
 function MapContainer({
@@ -35,12 +36,13 @@ function MapContainer({
     if (!ready) return;
 
     const getLocalName = (uri) => {
+      // eslint-disable-next-line
       const match = uri.match(/[#\/]([^#\/]+)$/);
       return match ? match[1].toUpperCase() : uri;
     };
 
     const aggFuncShort = getLocalName(selectedAggFunc);
-
+    // eslint-disable-next-line
     const QUERY = `
       PREFIX qb: <http://purl.org/linked-data/cube#>
       PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
@@ -58,9 +60,51 @@ function MapContainer({
       GROUP BY ?regionName
       ORDER BY ?regionName
     `;
+
+    const QUERY2 = `
+PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?regionName (${aggFuncShort}(xsd:integer(?m)) AS ?value)
+WHERE {
+  ?o a qb:Observation ;
+     qb:dataSet <${selectedDataset}> ;
+     <${selectedMeasure}> ?m .
+  ?o ?cuboidDimProperty ?cuboidEntity .
+  ?cuboidEntity qb4o:memberOf ?cuboidLevel .
+  FILTER(?cuboidDimProperty != qb:dataSet && ?cuboidDimProperty != <${selectedMeasure}> && ?cuboidLevel != <${selectedMeasure}>)
+  OPTIONAL {
+    ?cuboidEntity ?hierarchyProperty1 ?geoEntity1 .
+    ?hierarchyProperty1 a qb4o:RollupProperty .
+    ?geoEntity1 qb4o:memberOf <${selectedGrographicLevel}> .
+  }
+  OPTIONAL {
+    ?cuboidEntity ?hierarchyProperty1 ?geoEntity1 .
+    ?hierarchyProperty1 a qb4o:RollupProperty .
+    ?geoEntity1 ?hierarchyProperty2 ?geoEntity2 .
+    ?hierarchyProperty2 a qb4o:RollupProperty .
+    ?geoEntity2 qb4o:memberOf <${selectedGrographicLevel}> .
+  }
+  OPTIONAL {
+    ?cuboidEntity ?hierarchyProperty1 ?geoEntity1 .
+    ?hierarchyProperty1 a qb4o:RollupProperty .
+    ?geoEntity1 ?hierarchyProperty2 ?geoEntity2 .
+    ?hierarchyProperty2 a qb4o:RollupProperty .
+    ?geoEntity2 ?hierarchyProperty3 ?geoEntity3 .
+    ?hierarchyProperty3 a qb4o:RollupProperty .
+    ?geoEntity3 qb4o:memberOf <${selectedGrographicLevel}> .
+  }
+  BIND(COALESCE(?geoEntity3, ?geoEntity2, ?geoEntity1, ?cuboidEntity) AS ?finalEntity)
+  ?finalEntity qb4o:memberOf <${selectedGrographicLevel}> .
+  ?finalEntity <${selectedGrographicLevelAttribute}> ?regionName .
+}
+GROUP BY ?regionName
+ORDER BY ?regionName
+    `
     const fetchData = async () => {
       try {
-        const bindings = await queryVirtuoso(QUERY);
+        const bindings = await queryVirtuoso(QUERY2);
         const regionStats = bindings.map(b => ({
           name: b.regionName.value,
           value: parseFloat(b.value.value),
