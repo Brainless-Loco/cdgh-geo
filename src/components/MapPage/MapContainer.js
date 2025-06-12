@@ -40,7 +40,8 @@ function MapContainer({
     const aggFuncShort = getLocalName(selectedAggFunc);
     // eslint-disable-next-line
 
-    const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(aggFuncShort,selectedDataset,selectedMeasure,selectedGrographicLevel,selectedGrographicLevelAttribute)
+    const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(aggFuncShort, selectedDataset, selectedMeasure, selectedGrographicLevel, selectedGrographicLevelAttribute)
+
     const fetchData = async () => {
       try {
         const bindings = await queryVirtuoso(QUERY);
@@ -52,27 +53,28 @@ function MapContainer({
         // Map fuzzy names to geojson shape IDs
         const matched = geoJson?.features.map(feature => {
           const shapeName = feature.properties.shapeName;
-          const match = stringSimilarity.findBestMatch(
+          const { bestMatch } = stringSimilarity.findBestMatch(
             shapeName,
             regionStats.map(r => r.name)
-          ).bestMatch;
+          );
 
-          const stat = regionStats.find(r => r.name === match.target);
+          const stat = regionStats.find(r => r.name === bestMatch.target);
           return {
             id: feature.properties.shapeID,
-            value: stat?.value ?? 0,
+            value: bestMatch.rating > 0.4 ? stat?.value ?? 0 : 0,
           };
-        });
+        })
 
         setMappedData(matched || []);
+        console.log(matched)
       } catch (e) {
         console.error('Query/map fetch failed:', e);
       }
     };
 
     fetchData();
-  }, 
-  [ selectedDataset, selectedGrographicLevel, selectedGrographicLevelAttribute, selectedMeasure, selectedAggFunc, geoJson, selectedLayer]);
+  },
+    [selectedDataset, selectedGrographicLevel, selectedGrographicLevelAttribute, selectedMeasure, selectedAggFunc, geoJson, selectedLayer]);
 
   return (
     <div className="w-full h-[100vh]">
