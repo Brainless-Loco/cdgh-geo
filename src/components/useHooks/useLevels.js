@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { queryVirtuoso } from './queryVirtuoso';
-
-const TBOX = process.env.REACT_APP_TBOX_GRAPH;
-const ABOX = process.env.REACT_APP_ABOX_GRAPH;
+import { QUERY_TO_GET_LEVELS } from '../utils/queries';
 
 export const useLevels = (selectedDataset, prefixMap, setPrefixMap) => {
   const [levels, setLevels] = useState({});
@@ -10,46 +8,11 @@ export const useLevels = (selectedDataset, prefixMap, setPrefixMap) => {
   useEffect(() => {
     if (!selectedDataset) return;
 
-    const LEVEL_QUERY = `
-PREFIX qb: <http://purl.org/linked-data/cube#>
-PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-SELECT DISTINCT ?level ?levelAtrribute
-FROM <${TBOX}>
-FROM <${ABOX}>
-WHERE {
-  <${selectedDataset}> rdf:type qb:DataSet ; 
-    qb:structure ?cuboid.
-
-  ?cuboid qb:component ?BNodeForCuboidLevel ;
-          qb4o:isCuboidOf ?cube.
-
-  ?BNodeForCuboidLevel qb4o:level ?cuboidLevel.
-
-  ?cuboidHierarchy qb4o:hasLevel ?cuboidLevel ;
-                   qb4o:inDimension ?dimension.
-
-  ?cube rdf:type qb:DataStructureDefinition ;
-        qb:component ?BNodeForDimension.
-
-  ?BNodeForDimension qb4o:dimension ?dimension.
-
-  ?dimension qb4o:hasHierarchy ?hierarchy.
-
-  FILTER EXISTS {
-    ?hierarchy qb4o:hasLevel ?hl .
-    FILTER(?hl = ?cuboidLevel)
-  }
-
-  ?hierarchy qb4o:hasLevel ?level.
-  ?level qb4o:hasAttribute ?levelAtrribute.
-}
-ORDER BY ?level ?levelAtrribute`;
+    const QUERY = QUERY_TO_GET_LEVELS(selectedDataset)
 
     const fetch = async () => {
       try {
-        const bindings = await queryVirtuoso(LEVEL_QUERY);
+        const bindings = await queryVirtuoso(QUERY);
         const parsed = {};
         let prefixIndex = Object.keys(prefixMap).length + 1;
         const updatedPrefixMap = { ...prefixMap };
@@ -69,7 +32,7 @@ ORDER BY ?level ?levelAtrribute`;
           if (existing) {
             prefix = existing[0];
           } else {
-            prefix = `prefix${prefixIndex++}`;
+            prefix = `diabatic${prefixIndex++}`;
             updatedPrefixMap[prefix] = base;
           }
 

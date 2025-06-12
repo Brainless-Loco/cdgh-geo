@@ -1,34 +1,17 @@
 import { useEffect, useState } from 'react';
 import { queryVirtuoso } from './queryVirtuoso';
-
-
-const TBOX = process.env.REACT_APP_TBOX_GRAPH;
-
-
+import { QUERY_TO_GET_MEASURES } from '../utils/queries';
 
 export const useMeasures = (prefixMap, setPrefixMap, selectedDataset) => {
     const [measures, setMeasures] = useState({});
     const [loading, setLoading] = useState(true);
 
-    const MEASURE_QUERY = `
-PREFIX qb: <http://purl.org/linked-data/cube#>
-PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
-SELECT DISTINCT ?measure ?aggFunc
-FROM <${TBOX}>
-WHERE {
-  <${selectedDataset}> a qb:DataSet ;
-           qb:structure ?cuboid .
-  ?cuboid qb:component ?bnode .
-  ?bnode qb:measure ?measure ;
-         qb4o:aggregateFunction ?aggFunc .
-}
-ORDER BY ?measure ?aggFunc
-`;
+    const QUERY = QUERY_TO_GET_MEASURES(selectedDataset);
 
     useEffect(() => {
         const fetchMeasures = async () => {
             try {
-                const bindings = await queryVirtuoso(MEASURE_QUERY);
+                const bindings = await queryVirtuoso(QUERY);
                 const parsed = {};
                 let prefixIndex = Object.keys(prefixMap).length + 1;
                 const updatedPrefixMap = { ...prefixMap };
@@ -49,7 +32,7 @@ ORDER BY ?measure ?aggFunc
                     if (existingPrefix) {
                         prefix = existingPrefix[0];
                     } else {
-                        prefix = `prefix${prefixIndex++}`;
+                        prefix = `diabatic${prefixIndex++}`;
                         updatedPrefixMap[prefix] = base;
                     }
 
@@ -94,7 +77,7 @@ ORDER BY ?measure ?aggFunc
         };
 
         fetchMeasures();
-    }, [prefixMap,setPrefixMap, MEASURE_QUERY]);
+    }, [prefixMap,setPrefixMap, QUERY]);
 
 
 
