@@ -10,10 +10,14 @@ import { QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL } from '../utils/queries';
 function MapContainer({
   selectedLayer,
   selectedDataset,
-  selectedGrographicLevel,
-  selectedGrographicLevelAttribute,
+  selectedGeographicLevel,
+  selectedGeographicLevelAttribute,
   selectedMeasure,
   selectedAggFunc,
+  selectedTypeOfAnalysis,
+  selectedHealthLevel,
+  selectedHealthLevelAttribute,
+  selectedAggFunctionForHealthLevel
 }) {
   const [geoJson, setGeoJson] = useState(null);
   const [mappedData, setMappedData] = useState([]);
@@ -26,12 +30,14 @@ function MapContainer({
     }
   }, [selectedLayer]);
 
+
+
   useEffect(() => {
     const ready =
       selectedLayer &&
       selectedDataset &&
-      selectedGrographicLevel &&
-      selectedGrographicLevelAttribute &&
+      selectedGeographicLevel &&
+      selectedGeographicLevelAttribute &&
       selectedMeasure &&
       selectedAggFunc;
 
@@ -40,8 +46,7 @@ function MapContainer({
     const aggFuncShort = getLocalName(selectedAggFunc);
     // eslint-disable-next-line
 
-    const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(aggFuncShort, selectedDataset, selectedMeasure, selectedGrographicLevel, selectedGrographicLevelAttribute)
-
+    const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(aggFuncShort, selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute)
     const fetchData = async () => {
       try {
         const bindings = await queryVirtuoso(QUERY);
@@ -66,7 +71,6 @@ function MapContainer({
         })
 
         setMappedData(matched || []);
-        console.log(matched)
       } catch (e) {
         console.error('Query/map fetch failed:', e);
       }
@@ -74,21 +78,20 @@ function MapContainer({
 
     fetchData();
   },
-    [selectedDataset, selectedGrographicLevel, selectedGrographicLevelAttribute, selectedMeasure, selectedAggFunc, geoJson, selectedLayer]);
-
+    [selectedDataset, selectedGeographicLevel, selectedGeographicLevelAttribute, selectedMeasure, selectedAggFunc, geoJson, selectedLayer]);
   return (
     <div className="w-full h-[100vh]">
-      {/* {geoJson!=null &&
+      {/* {geoJson && mappedData.length <1 &&
         <BasicMap geoJson={geoJson}/>
       } */}
       {geoJson && mappedData.length > 0 && (
         <Plot
           data={[
             {
-              type: 'choroplethmapbox',
+              type: 'choroplethmap',
               geojson: geoJson,
-              locations: mappedData.map(m => m.id),
-              z: mappedData.map(m => m.value),
+              locations: mappedData.map(m => m.id) ?? geoJson.features.map(f => f.properties.shapeID),
+              z: mappedData.map(m => m.value) ?? geoJson.features.map(() => 1),
               featureidkey: 'properties.shapeID',
               colorscale: 'RdOrYl',
               colorbar: { title: selectedAggFunc },
@@ -96,8 +99,8 @@ function MapContainer({
             },
           ]}
           layout={{
-            mapbox: {
-              style: 'carto-positron',
+            map: {
+              style: 'white-bg',
               // 'open-street-map', or 'white-bg', 'carto-positron'
               center: { lat: 23.685, lon: 90.3563 },
               zoom: 6.1,

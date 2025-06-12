@@ -2,7 +2,7 @@ const TBOX = process.env.REACT_APP_TBOX_GRAPH;
 const ABOX = process.env.REACT_APP_ABOX_GRAPH;
 
 
-export const QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL = (aggFuncShort, selectedDataset, selectedMeasure, selectedGrographicLevel, selectedGrographicLevelAttribute) => {
+export const QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL = (aggFuncShort, selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute) => {
     return `
 PREFIX qb: <http://purl.org/linked-data/cube#>
 PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
@@ -21,14 +21,14 @@ WHERE {
   OPTIONAL {
     ?cuboidEntity ?hierarchyProperty1 ?geoEntity1 .
     ?hierarchyProperty1 a qb4o:RollupProperty .
-    ?geoEntity1 qb4o:memberOf <${selectedGrographicLevel}> .
+    ?geoEntity1 qb4o:memberOf <${selectedGeographicLevel}> .
   }
   OPTIONAL {
     ?cuboidEntity ?hierarchyProperty1 ?geoEntity1 .
     ?hierarchyProperty1 a qb4o:RollupProperty .
     ?geoEntity1 ?hierarchyProperty2 ?geoEntity2 .
     ?hierarchyProperty2 a qb4o:RollupProperty .
-    ?geoEntity2 qb4o:memberOf <${selectedGrographicLevel}> .
+    ?geoEntity2 qb4o:memberOf <${selectedGeographicLevel}> .
   }
   OPTIONAL {
     ?cuboidEntity ?hierarchyProperty1 ?geoEntity1 .
@@ -37,11 +37,11 @@ WHERE {
     ?hierarchyProperty2 a qb4o:RollupProperty .
     ?geoEntity2 ?hierarchyProperty3 ?geoEntity3 .
     ?hierarchyProperty3 a qb4o:RollupProperty .
-    ?geoEntity3 qb4o:memberOf <${selectedGrographicLevel}> .
+    ?geoEntity3 qb4o:memberOf <${selectedGeographicLevel}> .
   }
   BIND(COALESCE(?geoEntity3, ?geoEntity2, ?geoEntity1, ?cuboidEntity) AS ?finalEntity)
-  ?finalEntity qb4o:memberOf <${selectedGrographicLevel}> .
-  ?finalEntity <${selectedGrographicLevelAttribute}> ?regionName .
+  ?finalEntity qb4o:memberOf <${selectedGeographicLevel}> .
+  ?finalEntity <${selectedGeographicLevelAttribute}> ?regionName .
 }
 GROUP BY ?regionName ?m
 ORDER BY ?regionName

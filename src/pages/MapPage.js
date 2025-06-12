@@ -8,8 +8,27 @@ function MapPage() {
 
   const [selectedDataset, setSelectedDataset] = useState('');
 
-  const [selectedGrographicLevel, setSelectedGrographicLevel] = useState('')
-  const [selectedGrographicLevelAttribute, setSelectedGrographicLevelAttribute] = useState('')
+  const [selectedGeographicLevel, setSelectedGeographicLevel] = useState('')
+  const [selectedGeographicLevelAttribute, setSelectedGeographicLevelAttribute] = useState('')
+
+
+  const [selectedTypeOfAnalysis, setselectedTypeOfAnalysis] = useState('')
+  const handleTypeOfAnalysisChange = (e) => {
+    const value = e.target.value;
+    setselectedTypeOfAnalysis(value);
+    if (value === 'Measure') {
+      setSelectedHealthLevel('')
+      setSelectedHealthLevelAttribute('')
+    }
+    else {
+      setSelectedMeasure('')
+      setSelectedAggFunc('')
+    }
+  };
+
+  const [selectedHealthLevel, setSelectedHealthLevel] = useState('')
+  const [selectedHealthLevelAttribute, setSelectedHealthLevelAttribute] = useState('')
+  const [selectedAggFunctionForHealthLevel, setSelectedAggFunctionForHealthLevel] = useState('')
 
   const [measures, setMeasures] = useState([])
 
@@ -25,10 +44,14 @@ function MapPage() {
         <MapContainer
           selectedLayer={selectedLayer}
           selectedDataset={selectedDataset}
-          selectedGrographicLevel={selectedGrographicLevel}
-          selectedGrographicLevelAttribute={selectedGrographicLevelAttribute}
+          selectedGeographicLevel={selectedGeographicLevel}
+          selectedGeographicLevelAttribute={selectedGeographicLevelAttribute}
+          selectedTypeOfAnalysis={selectedTypeOfAnalysis}
           selectedMeasure={selectedMeasure}
           selectedAggFunc={selectedAggFunc}
+          selectedHealthLevel={selectedHealthLevel}
+          selectedHealthLevelAttribute={selectedHealthLevelAttribute}
+          selectedAggFunctionForHealthLevel={selectedAggFunctionForHealthLevel}
         />
       </div>
       <div className="w-1/5 bg-gray-100 p-4">
@@ -41,11 +64,23 @@ function MapPage() {
           selectedDataset={selectedDataset}
           setSelectedDataset={setSelectedDataset}
 
-          selectedGrographicLevel={selectedGrographicLevel}
-          setSelectedGrographicLevel={setSelectedGrographicLevel}
+          selectedGeographicLevel={selectedGeographicLevel}
+          setSelectedGeographicLevel={setSelectedGeographicLevel}
 
-          selectedGrographicLevelAttribute={selectedGrographicLevelAttribute}
-          setSelectedGrographicLevelAttribute={setSelectedGrographicLevelAttribute}
+          selectedGeographicLevelAttribute={selectedGeographicLevelAttribute}
+          setSelectedGeographicLevelAttribute={setSelectedGeographicLevelAttribute}
+
+          selectedTypeOfAnalysis={selectedTypeOfAnalysis}
+          handleTypeOfAnalysisChange={handleTypeOfAnalysisChange}
+
+          selectedHealthLevel={selectedHealthLevel}
+          setSelectedHealthLevel={setSelectedHealthLevel}
+
+          selectedHealthLevelAttribute={selectedHealthLevelAttribute}
+          setSelectedHealthLevelAttribute={setSelectedHealthLevelAttribute}
+
+          selectedAggFunctionForHealthLevel={selectedAggFunctionForHealthLevel}
+          setSelectedAggFunctionForHealthLevel={setSelectedAggFunctionForHealthLevel}
 
           measures={measures}
           setMeasures={setMeasures}
