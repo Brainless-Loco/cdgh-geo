@@ -2,13 +2,13 @@ const TBOX = process.env.REACT_APP_TBOX_GRAPH;
 const ABOX = process.env.REACT_APP_ABOX_GRAPH;
 
 
-export const QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL = (aggFuncShort, selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute) => {
+export const QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL = (selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute) => {
     return `
 PREFIX qb: <http://purl.org/linked-data/cube#>
 PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT ?regionName (${aggFuncShort}(xsd:integer(?m)) AS ?value)
+SELECT ?regionName (sum(xsd:integer(?m)) AS ?value)
 FROM <${TBOX}>
 FROM <${ABOX}>
 WHERE {

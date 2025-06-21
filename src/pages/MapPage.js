@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MapContainer from '../components/MapPage/MapContainer';
 import Sidebar from '../components/MapPage/Sidebar';
 
@@ -22,7 +22,6 @@ function MapPage() {
     }
     else {
       setSelectedMeasure('')
-      setSelectedAggFunc('')
     }
   };
 
@@ -34,8 +33,15 @@ function MapPage() {
 
   const [selectedMeasure, setSelectedMeasure] = useState('');
 
-  const [selectedAggFunc, setSelectedAggFunc] = useState('');
-
+  
+  useEffect(() => {
+    setSelectedGeographicLevel('')
+    setSelectedGeographicLevelAttribute('')
+    setselectedTypeOfAnalysis('')
+    setSelectedHealthLevelAttribute('')
+    setSelectedAggFunctionForHealthLevel('')
+    setSelectedMeasure('')
+  }, [selectedDataset])
 
 
   return (
@@ -48,7 +54,6 @@ function MapPage() {
           selectedGeographicLevelAttribute={selectedGeographicLevelAttribute}
           selectedTypeOfAnalysis={selectedTypeOfAnalysis}
           selectedMeasure={selectedMeasure}
-          selectedAggFunc={selectedAggFunc}
           selectedHealthLevel={selectedHealthLevel}
           selectedHealthLevelAttribute={selectedHealthLevelAttribute}
           selectedAggFunctionForHealthLevel={selectedAggFunctionForHealthLevel}
@@ -87,9 +92,6 @@ function MapPage() {
 
           selectedMeasure={selectedMeasure}
           setSelectedMeasure={setSelectedMeasure}
-
-          selectedAggFunc={selectedAggFunc}
-          setSelectedAggFunc={setSelectedAggFunc}
         />
       </div>
     </div>

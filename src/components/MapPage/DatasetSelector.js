@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDatasets } from './../useHooks/useDatasets';
 
 function DatasetSelector({ selectedDataset, setSelectedDataset, prefixMap, setPrefixMap }) {
 
-    const { datasets } = useDatasets(prefixMap, setPrefixMap);
+    // const { datasets } = useDatasets(prefixMap, setPrefixMap);
+
+    const [datasets, setDatasets] = useState([])
+
+    const [shouldFetch, setShouldFetch] = useState(true);
+    const [localPrefixMap, setLocalPrefixMap] = useState(prefixMap);
+
+    // eslint-disable-next-line 
+    const { datasets: fetchedDatasets, loading } = useDatasets(localPrefixMap, setLocalPrefixMap);
+
+    useEffect(() => {
+        if (shouldFetch && Object.keys(fetchedDatasets).length > 0) {
+            setDatasets(fetchedDatasets);
+            setPrefixMap(localPrefixMap); // update the global one once
+            setShouldFetch(false); // ensure it doesn't repeat
+        }
+    }, [shouldFetch, fetchedDatasets, localPrefixMap, setDatasets, setPrefixMap]);
+
+
 
     return (
         <div>

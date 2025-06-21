@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMeasures } from '../useHooks/useMeasures';
 
 function MeasureSelector({
@@ -8,22 +8,29 @@ function MeasureSelector({
   setPrefixMap,
   selectedMeasure,
   setSelectedMeasure,
-  setSelectedAggFunc,
   selectedDataset
 }) {
 
-  const { measures:fetchedMeasures } = useMeasures(prefixMap, setPrefixMap,selectedDataset);
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const [localPrefixMap, setLocalPrefixMap] = useState(prefixMap);
+
+  // eslint-disable-next-line 
+  const { measures: fetchedMeasures, loading } = useMeasures(
+    localPrefixMap,
+    setLocalPrefixMap,
+    selectedDataset
+  );
 
   useEffect(() => {
-    if (Object.keys(fetchedMeasures).length > 0) {
+    if (shouldFetch && Object.keys(fetchedMeasures).length > 0) {
       setMeasures(fetchedMeasures);
+      setPrefixMap(localPrefixMap); // update the global one once
+      setShouldFetch(false); // ensure it doesn't repeat
     }
-  }, [fetchedMeasures, setMeasures]);
+  }, [shouldFetch, fetchedMeasures, localPrefixMap, setMeasures, setPrefixMap]);
 
   const handleChange = (e) => {
-    const value = e.target.value;
-    setSelectedMeasure(value);
-    setSelectedAggFunc('sum');
+    setSelectedMeasure(e.target.value);
   };
 
 

@@ -1,11 +1,11 @@
 import DatasetSelector from './DatasetSelector';
 import GeographicLevelSelector from './GeographicLevelSelector';
 import MeasureSelector from './MeasureSelector';
-import AggregationSelector from './AggregationSelector';
 import LayerSelector from './LayerSelector';
 import TypeOfAnalysis from './TypeOfAnalysis';
 import { useLevels } from '../useHooks/useLevels';
 import HealthLevelSelector from './HealthLevelSelector';
+import { useEffect, useState } from 'react';
 
 function Sidebar({
   onLayerChange,
@@ -39,11 +39,25 @@ function Sidebar({
   selectedMeasure,
   setSelectedMeasure,
 
-  selectedAggFunc,
-  setSelectedAggFunc,
 }) {
 
-  const { levels } = useLevels(selectedDataset, prefixMap, setPrefixMap);
+  // const { levels } = useLevels(selectedDataset, prefixMap, setPrefixMap);
+
+  const [levels, setLevels] = useState([])
+
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const [localPrefixMap, setLocalPrefixMap] = useState(prefixMap);
+
+  // eslint-disable-next-line 
+  const { levels: fetchedLevels, loading } =  useLevels(selectedDataset, localPrefixMap, setLocalPrefixMap);
+
+  useEffect(() => {
+    if (shouldFetch && Object.keys(fetchedLevels).length > 0) {
+      setLevels(fetchedLevels);
+      setPrefixMap(localPrefixMap); // update the global one once
+      setShouldFetch(false); // ensure it doesn't repeat
+    }
+  }, [shouldFetch, fetchedLevels, localPrefixMap, setLevels, setPrefixMap]);
 
 
   return (
@@ -69,38 +83,29 @@ function Sidebar({
           <TypeOfAnalysis selectedTypeOfAnalysis={selectedTypeOfAnalysis} handleTypeOfAnalysisChange={handleTypeOfAnalysisChange} />
           {
             selectedTypeOfAnalysis === 'Measure' &&
-              <>
-                <MeasureSelector
-                  selectedDataset={selectedDataset}
-                  prefixMap={prefixMap}
-                  setPrefixMap={setPrefixMap}
-                  measures={measures}
-                  setMeasures={setMeasures}
-                  selectedMeasure={selectedMeasure}
-                  setSelectedMeasure={setSelectedMeasure}
-                  setSelectedAggFunc={setSelectedAggFunc}
-                />
-                <AggregationSelector
-                  measures={measures}
-                  selectedMeasure={selectedMeasure}
-                  selectedAggFunc={selectedAggFunc}
-                  setSelectedAggFunc={setSelectedAggFunc}
-                />
-              </>
+            <MeasureSelector
+              selectedDataset={selectedDataset}
+              prefixMap={prefixMap}
+              setPrefixMap={setPrefixMap}
+              measures={measures}
+              setMeasures={setMeasures}
+              selectedMeasure={selectedMeasure}
+              setSelectedMeasure={setSelectedMeasure}
+            />
           }
           {
             selectedTypeOfAnalysis === 'Health Level' &&
-              <>
-                <HealthLevelSelector levels={levels}
-                  onLayerChange={onLayerChange}
-                  selectedHealthLevel={selectedHealthLevel}
-                  setSelectedHealthLevel={setSelectedHealthLevel}
-                  selectedHealthLevelAttribute={selectedHealthLevelAttribute}
-                  setSelectedHealthLevelAttribute={setSelectedHealthLevelAttribute}
-                  selectedAggFunctionForHealthLevel={selectedAggFunctionForHealthLevel}
-                  setSelectedAggFunctionForHealthLevel={setSelectedAggFunctionForHealthLevel} 
-                />
-              </>
+            <>
+              <HealthLevelSelector levels={levels}
+                onLayerChange={onLayerChange}
+                selectedHealthLevel={selectedHealthLevel}
+                setSelectedHealthLevel={setSelectedHealthLevel}
+                selectedHealthLevelAttribute={selectedHealthLevelAttribute}
+                setSelectedHealthLevelAttribute={setSelectedHealthLevelAttribute}
+                selectedAggFunctionForHealthLevel={selectedAggFunctionForHealthLevel}
+                setSelectedAggFunctionForHealthLevel={setSelectedAggFunctionForHealthLevel}
+              />
+            </>
           }
 
         </>

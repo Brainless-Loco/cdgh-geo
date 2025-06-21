@@ -4,7 +4,7 @@ import stringSimilarity from 'string-similarity';
 import { queryVirtuoso } from '../useHooks/queryVirtuoso';
 // eslint-disable-next-line
 import BasicMap from './BasicMap';
-import { getLocalName } from './../utils/getLocalName';
+// import { getLocalName } from './../utils/getLocalName';
 import { QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL } from '../utils/queries';
 
 function MapContainer({
@@ -13,7 +13,6 @@ function MapContainer({
   selectedGeographicLevel,
   selectedGeographicLevelAttribute,
   selectedMeasure,
-  selectedAggFunc,
   selectedTypeOfAnalysis,
   selectedHealthLevel,
   selectedHealthLevelAttribute,
@@ -30,6 +29,10 @@ function MapContainer({
     }
   }, [selectedLayer]);
 
+  useEffect(()=>{
+    console.log("geojson")
+  },[geoJson])
+
 
 
   useEffect(() => {
@@ -38,15 +41,12 @@ function MapContainer({
       selectedDataset &&
       selectedGeographicLevel &&
       selectedGeographicLevelAttribute &&
-      selectedMeasure &&
-      selectedAggFunc;
+      selectedMeasure
 
     if (!ready) return;
-
-    const aggFuncShort = getLocalName(selectedAggFunc);
     // eslint-disable-next-line
 
-    const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(aggFuncShort, selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute)
+    const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute)
     const fetchData = async () => {
       try {
         const bindings = await queryVirtuoso(QUERY);
@@ -78,7 +78,7 @@ function MapContainer({
 
     fetchData();
   },
-    [selectedDataset, selectedGeographicLevel, selectedGeographicLevelAttribute, selectedMeasure, selectedAggFunc, geoJson, selectedLayer]);
+    [selectedDataset, selectedGeographicLevel, selectedGeographicLevelAttribute, selectedMeasure, geoJson, selectedLayer]);
   return (
     <div className="w-full h-[100vh]">
       {/* {geoJson && mappedData.length <1 &&
@@ -94,7 +94,7 @@ function MapContainer({
               z: mappedData.map(m => m.value) ?? geoJson.features.map(() => 1),
               featureidkey: 'properties.shapeID',
               colorscale: 'RdOrYl',
-              colorbar: { title: selectedAggFunc },
+              colorbar: { title: 'Sum' },
               text: geoJson.features.map(f => f.properties.shapeName),
             },
           ]}
