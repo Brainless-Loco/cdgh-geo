@@ -12,10 +12,10 @@ function MapPage() {
   const [selectedGeographicLevelAttribute, setSelectedGeographicLevelAttribute] = useState('')
 
 
-  const [selectedTypeOfAnalysis, setselectedTypeOfAnalysis] = useState('')
+  const [selectedTypeOfAnalysis, setSelectedTypeOfAnalysis] = useState('')
   const handleTypeOfAnalysisChange = (e) => {
     const value = e.target.value;
-    setselectedTypeOfAnalysis(value);
+    setSelectedTypeOfAnalysis(value);
     if (value === 'Measure') {
       setSelectedHealthLevel('')
       setSelectedHealthLevelAttribute('')
@@ -33,15 +33,43 @@ function MapPage() {
 
   const [selectedMeasure, setSelectedMeasure] = useState('');
 
-  
+  useEffect(() => {
+    setSelectedDataset('');
+    setSelectedGeographicLevel('');
+    setSelectedGeographicLevelAttribute('');
+    setSelectedTypeOfAnalysis('');
+    setSelectedHealthLevel('');
+    setSelectedHealthLevelAttribute('');
+    setSelectedAggFunctionForHealthLevel('');
+    setSelectedMeasure('');
+  }, [selectedLayer]);
+
   useEffect(() => {
     setSelectedGeographicLevel('')
     setSelectedGeographicLevelAttribute('')
-    setselectedTypeOfAnalysis('')
+    setSelectedTypeOfAnalysis('')
     setSelectedHealthLevelAttribute('')
     setSelectedAggFunctionForHealthLevel('')
     setSelectedMeasure('')
   }, [selectedDataset])
+
+  useEffect(() => {
+    setSelectedGeographicLevelAttribute('');
+    setSelectedMeasure('');
+    setSelectedTypeOfAnalysis('')
+    setSelectedHealthLevel('')
+    setSelectedHealthLevelAttribute('')
+  }, [selectedGeographicLevel]);
+
+  useEffect(() => {
+    setSelectedMeasure('');
+    setSelectedHealthLevel('');
+    setSelectedHealthLevelAttribute('');
+  }, [selectedTypeOfAnalysis]);
+
+  useEffect(() => {
+    setSelectedHealthLevelAttribute('');
+  }, [selectedHealthLevel]);
 
 
   return (

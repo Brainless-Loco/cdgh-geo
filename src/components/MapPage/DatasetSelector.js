@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useDatasets } from './../useHooks/useDatasets';
+import { extractDatasets } from './../useHooks/extractDatasets';
 
 function DatasetSelector({ selectedDataset, setSelectedDataset, prefixMap, setPrefixMap }) {
 
-    // const { datasets } = useDatasets(prefixMap, setPrefixMap);
-
     const [datasets, setDatasets] = useState([])
-
-    const [shouldFetch, setShouldFetch] = useState(true);
-    const [localPrefixMap, setLocalPrefixMap] = useState(prefixMap);
-
-    // eslint-disable-next-line 
-    const { datasets: fetchedDatasets, loading } = useDatasets(localPrefixMap, setLocalPrefixMap);
+    // eslint-disable-next-line
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (shouldFetch && Object.keys(fetchedDatasets).length > 0) {
-            setDatasets(fetchedDatasets);
-            setPrefixMap(localPrefixMap); // update the global one once
-            setShouldFetch(false); // ensure it doesn't repeat
-        }
-    }, [shouldFetch, fetchedDatasets, localPrefixMap, setDatasets, setPrefixMap]);
+        const fetch = async () => {
+            try {
+                const { datasets, updatedPrefixMap } = await extractDatasets(prefixMap);
+                setDatasets(datasets);
+                setPrefixMap(updatedPrefixMap);
+            } catch (e) {
+                console.error('Failed to fetch datasets:', e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetch();
+        // eslint-disable-next-line
+    }, []); // only once on mount
 
 
 

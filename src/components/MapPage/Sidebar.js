@@ -3,7 +3,7 @@ import GeographicLevelSelector from './GeographicLevelSelector';
 import MeasureSelector from './MeasureSelector';
 import LayerSelector from './LayerSelector';
 import TypeOfAnalysis from './TypeOfAnalysis';
-import { useLevels } from '../useHooks/useLevels';
+import { extractLevels } from '../useHooks/extractLevels';
 import HealthLevelSelector from './HealthLevelSelector';
 import { useEffect, useState } from 'react';
 
@@ -45,19 +45,21 @@ function Sidebar({
 
   const [levels, setLevels] = useState([])
 
-  const [shouldFetch, setShouldFetch] = useState(true);
-  const [localPrefixMap, setLocalPrefixMap] = useState(prefixMap);
-
-  // eslint-disable-next-line 
-  const { levels: fetchedLevels, loading } =  useLevels(selectedDataset, localPrefixMap, setLocalPrefixMap);
-
   useEffect(() => {
-    if (shouldFetch && Object.keys(fetchedLevels).length > 0) {
-      setLevels(fetchedLevels);
-      setPrefixMap(localPrefixMap); // update the global one once
-      setShouldFetch(false); // ensure it doesn't repeat
-    }
-  }, [shouldFetch, fetchedLevels, localPrefixMap, setLevels, setPrefixMap]);
+    const fetch = async () => {
+      if (!selectedDataset) return;
+      try {
+        const { levels, updatedPrefixMap } = await extractLevels(selectedDataset, prefixMap);
+        setLevels(levels);
+        setPrefixMap(updatedPrefixMap);
+      } catch (e) {
+        console.error('Failed to fetch levels:', e);
+      }
+    };
+
+    fetch();
+    // eslint-disable-next-line
+  }, [selectedDataset]);
 
 
   return (

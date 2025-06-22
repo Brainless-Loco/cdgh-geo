@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useMeasures } from '../useHooks/useMeasures';
+import React, { useEffect } from 'react';
+import { extractMeasures } from '../useHooks/extractMeasures';
 
 function MeasureSelector({
   measures,
@@ -11,23 +11,20 @@ function MeasureSelector({
   selectedDataset
 }) {
 
-  const [shouldFetch, setShouldFetch] = useState(true);
-  const [localPrefixMap, setLocalPrefixMap] = useState(prefixMap);
-
-  // eslint-disable-next-line 
-  const { measures: fetchedMeasures, loading } = useMeasures(
-    localPrefixMap,
-    setLocalPrefixMap,
-    selectedDataset
-  );
-
   useEffect(() => {
-    if (shouldFetch && Object.keys(fetchedMeasures).length > 0) {
-      setMeasures(fetchedMeasures);
-      setPrefixMap(localPrefixMap); // update the global one once
-      setShouldFetch(false); // ensure it doesn't repeat
-    }
-  }, [shouldFetch, fetchedMeasures, localPrefixMap, setMeasures, setPrefixMap]);
+    const fetch = async () => {
+      try {
+        const { measures, updatedPrefixMap } = await extractMeasures(prefixMap, selectedDataset);
+        setMeasures(measures);
+        setPrefixMap(updatedPrefixMap);
+      } catch (e) {
+        console.error("Failed to fetch measures:", e);
+      }
+    };
+
+    fetch();
+    // eslint-disable-next-line
+  }, []); // only on mount
 
   const handleChange = (e) => {
     setSelectedMeasure(e.target.value);

@@ -30,7 +30,7 @@ function MapContainer({
   }, [selectedLayer]);
 
   useEffect(()=>{
-    console.log("geojson")
+    // console.log("geojson")
   },[geoJson])
 
 
@@ -46,7 +46,9 @@ function MapContainer({
     if (!ready) return;
     // eslint-disable-next-line
 
+
     const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute)
+
     const fetchData = async () => {
       try {
         const bindings = await queryVirtuoso(QUERY);
