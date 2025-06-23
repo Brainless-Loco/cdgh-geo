@@ -144,3 +144,20 @@ WHERE {
 ORDER BY ?dataset
 `
 }
+
+
+export const QUERY_TO_GET_LEVEL_INSTANCES = (selectedLevel, selectedLevelAttribute)=>{
+ return `
+PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
+
+SELECT DISTINCT ?attributes
+FROM <${TBOX}>
+FROM <${ABOX}>
+WHERE {
+  ?id a qb4o:LevelMember ;
+      qb4o:memberOf <${selectedLevel}> ;
+      <${selectedLevelAttribute}> ?attributes .
+}
+ORDER BY ?attributes
+  `;
+}

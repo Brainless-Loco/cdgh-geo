@@ -1,7 +1,29 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import LevelAttributeSelector from './LevelAttributeSelector';
+import LevelInstanceSelector from './LevelInstanceSelector';
+import { extractLevelInstances } from './../useHooks/extractLevelInstances';
 
-function HealthLevelSelector({ levels, selectedHealthLevel, setSelectedHealthLevel, selectedHealthLevelAttribute, setSelectedHealthLevelAttribute, selectedAggFunctionForHealthLevel, setSelectedAggFunctionForHealthLevel }) {
+function HealthLevelSelector({ levels, selectedHealthLevel, setSelectedHealthLevel, selectedHealthLevelAttribute, setSelectedHealthLevelAttribute, selectedHealthLevelInstance, setSelectedHealthLevelInstance }) {
+
+    const [levelInstances, setLevelInstances] = useState([])
+
+    useEffect(() => {
+
+        const fetchInstances = async () => {
+            if (!selectedHealthLevel || !selectedHealthLevelAttribute) return;
+
+            try {
+                const instances = await extractLevelInstances(selectedHealthLevel, selectedHealthLevelAttribute);
+                setLevelInstances(instances);
+            } catch (e) {
+                console.error('Failed to fetch level instances:', e);
+            }
+        };
+
+        fetchInstances();
+        // eslint-disable-next-line
+    }, [selectedHealthLevel, selectedHealthLevelAttribute]);
+
 
 
     return (
@@ -24,21 +46,18 @@ function HealthLevelSelector({ levels, selectedHealthLevel, setSelectedHealthLev
                 selectedHealthLevel &&
                 <>
                     <LevelAttributeSelector
-                        title={"Attribute for Health Level"}
-                        selectedHealthLevel={selectedHealthLevel}
+                        title={"Attribute to show instances as"}
+                        selectedLevel={selectedHealthLevel}
                         levels={levels}
-                        selectedHealthLevelAttribute={selectedHealthLevelAttribute}
-                        setSelectedHealthLevelAttribute={setSelectedHealthLevelAttribute}
+                        selectedAttribute={selectedHealthLevelAttribute}
+                        setSelectedLevelAttribute={setSelectedHealthLevelAttribute}
                     />
-                    <label className="block mb-1 font-medium">Aggregation</label>
-                    <select
-                        value={selectedAggFunctionForHealthLevel}
-                        onChange={(e) => setSelectedAggFunctionForHealthLevel(e.target.value)}
-                        className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
-                    >
-                        <option value="">-- Choose --</option>
-                        <option value="avg">Average</option>
-                    </select>
+                    <LevelInstanceSelector
+                        title={"Level Instance"}
+                        selectedLevelInstance={selectedHealthLevelInstance}
+                        setSelectedLevelInstance={setSelectedHealthLevelInstance}
+                        instances={levelInstances}
+                    />
                 </>
 
             }

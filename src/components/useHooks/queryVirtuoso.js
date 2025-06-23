@@ -1,9 +1,7 @@
-// const SPARQL_ENDPOINT = 'http://localhost:5001/sparql';
-const SPARQL_ENDPOINT = 'https://cdgh-geo-proxy-server.vercel.app/sparql';
-// const SPARQL_ENDPOINT = 'http://localhost:3000/sparql'; // Use /api/sparql for Vercel
+const BACKEND_ENDPOINT = process.env.REACT_APP_BACKEND_ENDPOINT
 
 export const queryVirtuoso = async (sparqlQuery, options = {}) => {
-  const url = new URL(SPARQL_ENDPOINT);
+  const url = new URL(BACKEND_ENDPOINT);
 
   // console.log(sparqlQuery)
 

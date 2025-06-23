@@ -27,7 +27,7 @@ function MapPage() {
 
   const [selectedHealthLevel, setSelectedHealthLevel] = useState('')
   const [selectedHealthLevelAttribute, setSelectedHealthLevelAttribute] = useState('')
-  const [selectedAggFunctionForHealthLevel, setSelectedAggFunctionForHealthLevel] = useState('')
+  const [selectedHealthLevelInstance, setSelectedHealthLevelInstance] = useState('')
 
   const [measures, setMeasures] = useState([])
 
@@ -40,7 +40,6 @@ function MapPage() {
     setSelectedTypeOfAnalysis('');
     setSelectedHealthLevel('');
     setSelectedHealthLevelAttribute('');
-    setSelectedAggFunctionForHealthLevel('');
     setSelectedMeasure('');
   }, [selectedLayer]);
 
@@ -49,7 +48,6 @@ function MapPage() {
     setSelectedGeographicLevelAttribute('')
     setSelectedTypeOfAnalysis('')
     setSelectedHealthLevelAttribute('')
-    setSelectedAggFunctionForHealthLevel('')
     setSelectedMeasure('')
   }, [selectedDataset])
 
@@ -65,11 +63,17 @@ function MapPage() {
     setSelectedMeasure('');
     setSelectedHealthLevel('');
     setSelectedHealthLevelAttribute('');
+    setSelectedHealthLevelInstance([])
   }, [selectedTypeOfAnalysis]);
 
   useEffect(() => {
     setSelectedHealthLevelAttribute('');
   }, [selectedHealthLevel]);
+
+  useEffect(()=>{
+    setSelectedHealthLevelAttribute('')
+    setSelectedHealthLevelInstance([])
+  },[selectedHealthLevel])
 
 
   return (
@@ -84,7 +88,7 @@ function MapPage() {
           selectedMeasure={selectedMeasure}
           selectedHealthLevel={selectedHealthLevel}
           selectedHealthLevelAttribute={selectedHealthLevelAttribute}
-          selectedAggFunctionForHealthLevel={selectedAggFunctionForHealthLevel}
+          selectedHealthLevelInstance={selectedHealthLevelInstance}
         />
       </div>
       <div className="w-1/5 bg-gray-100 p-4">
@@ -111,9 +115,8 @@ function MapPage() {
 
           selectedHealthLevelAttribute={selectedHealthLevelAttribute}
           setSelectedHealthLevelAttribute={setSelectedHealthLevelAttribute}
-
-          selectedAggFunctionForHealthLevel={selectedAggFunctionForHealthLevel}
-          setSelectedAggFunctionForHealthLevel={setSelectedAggFunctionForHealthLevel}
+          selectedHealthLevelInstance={selectedHealthLevelInstance}
+          setSelectedHealthLevelInstance={setSelectedHealthLevelInstance}
 
           measures={measures}
           setMeasures={setMeasures}

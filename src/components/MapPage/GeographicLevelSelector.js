@@ -24,10 +24,10 @@ function GeographicLevelSelector({  levels,selectedGeographicLevel, setSelectedG
         selectedGeographicLevel &&
         <LevelAttributeSelector
           title={"Attribute for Geographic Level"}
-          selectedGeographicLevel={selectedGeographicLevel}
+          selectedLevel={selectedGeographicLevel}
           levels={levels}
-          selectedGeographicLevelAttribute={selectedGeographicLevelAttribute}
-          setSelectedGeographicLevelAttribute={setSelectedGeographicLevelAttribute}
+          selectedLevelAttribute={selectedGeographicLevelAttribute}
+          setSelectedLevelAttribute={setSelectedGeographicLevelAttribute}
           />
       }
     </div>

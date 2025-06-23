@@ -16,7 +16,6 @@ function MapContainer({
   selectedTypeOfAnalysis,
   selectedHealthLevel,
   selectedHealthLevelAttribute,
-  selectedAggFunctionForHealthLevel
 }) {
   const [geoJson, setGeoJson] = useState(null);
   const [mappedData, setMappedData] = useState([]);
@@ -29,23 +28,13 @@ function MapContainer({
     }
   }, [selectedLayer]);
 
-  useEffect(()=>{
-    // console.log("geojson")
-  },[geoJson])
 
 
+  // Call for Measures
+  useEffect(() => { 
+    const ready = selectedLayer && selectedDataset && selectedGeographicLevel && selectedGeographicLevelAttribute && selectedMeasure
 
-  useEffect(() => {
-    const ready =
-      selectedLayer &&
-      selectedDataset &&
-      selectedGeographicLevel &&
-      selectedGeographicLevelAttribute &&
-      selectedMeasure
-
-    if (!ready) return;
-    // eslint-disable-next-line
-
+    if (!ready || selectedTypeOfAnalysis !=='Measure') return;
 
     const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute)
 
@@ -80,10 +69,13 @@ function MapContainer({
 
     fetchData();
   },
-    [selectedDataset, selectedGeographicLevel, selectedGeographicLevelAttribute, selectedMeasure, geoJson, selectedLayer]);
+    [selectedDataset, selectedGeographicLevel, selectedGeographicLevelAttribute, selectedMeasure, geoJson, selectedLayer, selectedTypeOfAnalysis]);
+
+
+
   return (
     <div className="w-full h-[100vh]">
-      {/* {geoJson && mappedData.length <1 &&
+      {/* {geoJson && mappedData.length ==0 &&
         <BasicMap geoJson={geoJson}/>
       } */}
       {geoJson && mappedData.length > 0 && (
@@ -93,7 +85,7 @@ function MapContainer({
               type: 'choroplethmap',
               geojson: geoJson,
               locations: mappedData.map(m => m.id) ?? geoJson.features.map(f => f.properties.shapeID),
-              z: mappedData.map(m => m.value) ?? geoJson.features.map(() => 1),
+              z: mappedData.map(m => m.value) ?? geoJson.features.map(() => 0),
               featureidkey: 'properties.shapeID',
               colorscale: 'RdOrYl',
               colorbar: { title: 'Sum' },

@@ -32,16 +32,13 @@ function Sidebar({
 
   selectedHealthLevelAttribute,
   setSelectedHealthLevelAttribute,
-
-  selectedAggFunctionForHealthLevel,
-  setSelectedAggFunctionForHealthLevel,
+  selectedHealthLevelInstance,
+  setSelectedHealthLevelInstance,
 
   selectedMeasure,
   setSelectedMeasure,
 
 }) {
-
-  // const { levels } = useLevels(selectedDataset, prefixMap, setPrefixMap);
 
   const [levels, setLevels] = useState([])
 
@@ -60,6 +57,8 @@ function Sidebar({
     fetch();
     // eslint-disable-next-line
   }, [selectedDataset]);
+
+  
 
 
   return (
@@ -104,8 +103,8 @@ function Sidebar({
                 setSelectedHealthLevel={setSelectedHealthLevel}
                 selectedHealthLevelAttribute={selectedHealthLevelAttribute}
                 setSelectedHealthLevelAttribute={setSelectedHealthLevelAttribute}
-                selectedAggFunctionForHealthLevel={selectedAggFunctionForHealthLevel}
-                setSelectedAggFunctionForHealthLevel={setSelectedAggFunctionForHealthLevel}
+                selectedHealthLevelInstance={selectedHealthLevelInstance}
+                setSelectedHealthLevelInstance={setSelectedHealthLevelInstance}
               />
             </>
           }

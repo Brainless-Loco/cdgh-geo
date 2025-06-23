@@ -1,7 +1,4 @@
-import { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
-
-import React from 'react'
 
 export default function BasicMap({geoJson}) {
     return (
