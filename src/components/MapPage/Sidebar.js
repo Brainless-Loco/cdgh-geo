@@ -58,59 +58,84 @@ function Sidebar({
     // eslint-disable-next-line
   }, [selectedDataset]);
 
-  
+
 
 
   return (
     <div className="flex flex-col gap-6 overflow-y-auto pb-5 h-[100vh]">
       <h2 className="text-xl font-semibold">Map Controls</h2>
-      <LayerSelector onChange={onLayerChange} />
-      <DatasetSelector
-        selectedDataset={selectedDataset}
-        setSelectedDataset={setSelectedDataset}
-        prefixMap={prefixMap}
-        setPrefixMap={setPrefixMap}
-      />
-      {selectedDataset && (
-        <>
-          <GeographicLevelSelector
-            levels={levels}
-            onLayerChange={onLayerChange}
-            selectedGeographicLevel={selectedGeographicLevel}
-            setSelectedGeographicLevel={setSelectedGeographicLevel}
-            selectedGeographicLevelAttribute={selectedGeographicLevelAttribute}
-            setSelectedGeographicLevelAttribute={setSelectedGeographicLevelAttribute}
-          />
-          <TypeOfAnalysis selectedTypeOfAnalysis={selectedTypeOfAnalysis} handleTypeOfAnalysisChange={handleTypeOfAnalysisChange} />
-          {
-            selectedTypeOfAnalysis === 'Measure' &&
-            <MeasureSelector
-              selectedDataset={selectedDataset}
-              prefixMap={prefixMap}
-              setPrefixMap={setPrefixMap}
-              measures={measures}
-              setMeasures={setMeasures}
-              selectedMeasure={selectedMeasure}
-              setSelectedMeasure={setSelectedMeasure}
+      <div className='h-[90vh]'>
+        <LayerSelector onChange={onLayerChange} />
+        <DatasetSelector
+          selectedDataset={selectedDataset}
+          setSelectedDataset={setSelectedDataset}
+          prefixMap={prefixMap}
+          setPrefixMap={setPrefixMap}
+        />
+        {selectedDataset && (
+          <>
+            <GeographicLevelSelector
+              levels={levels}
+              onLayerChange={onLayerChange}
+              selectedGeographicLevel={selectedGeographicLevel}
+              setSelectedGeographicLevel={setSelectedGeographicLevel}
+              selectedGeographicLevelAttribute={selectedGeographicLevelAttribute}
+              setSelectedGeographicLevelAttribute={setSelectedGeographicLevelAttribute}
             />
-          }
-          {
-            selectedTypeOfAnalysis === 'Health Level' &&
-            <>
-              <HealthLevelSelector levels={levels}
-                onLayerChange={onLayerChange}
-                selectedHealthLevel={selectedHealthLevel}
-                setSelectedHealthLevel={setSelectedHealthLevel}
-                selectedHealthLevelAttribute={selectedHealthLevelAttribute}
-                setSelectedHealthLevelAttribute={setSelectedHealthLevelAttribute}
-                selectedHealthLevelInstance={selectedHealthLevelInstance}
-                setSelectedHealthLevelInstance={setSelectedHealthLevelInstance}
+            <TypeOfAnalysis selectedTypeOfAnalysis={selectedTypeOfAnalysis} handleTypeOfAnalysisChange={handleTypeOfAnalysisChange} />
+            {
+              selectedTypeOfAnalysis === 'Measure' &&
+              <MeasureSelector
+                selectedDataset={selectedDataset}
+                prefixMap={prefixMap}
+                setPrefixMap={setPrefixMap}
+                measures={measures}
+                setMeasures={setMeasures}
+                selectedMeasure={selectedMeasure}
+                setSelectedMeasure={setSelectedMeasure}
               />
-            </>
-          }
+            }
+            {
+              selectedTypeOfAnalysis === 'Health Level' &&
+              <>
+                <MeasureSelector
+                  selectedDataset={selectedDataset}
+                  prefixMap={prefixMap}
+                  setPrefixMap={setPrefixMap}
+                  measures={measures}
+                  setMeasures={setMeasures}
+                  selectedMeasure={selectedMeasure}
+                  setSelectedMeasure={setSelectedMeasure}
+                />
+                <HealthLevelSelector levels={levels}
+                  onLayerChange={onLayerChange}
+                  selectedHealthLevel={selectedHealthLevel}
+                  setSelectedHealthLevel={setSelectedHealthLevel}
+                  selectedHealthLevelAttribute={selectedHealthLevelAttribute}
+                  setSelectedHealthLevelAttribute={setSelectedHealthLevelAttribute}
+                  selectedHealthLevelInstance={selectedHealthLevelInstance}
+                  setSelectedHealthLevelInstance={setSelectedHealthLevelInstance}
+                />
+              </>
+            }
 
-        </>
-      )}
+          </>
+        )}
+
+      </div>
+      <div className="text-xs text-center px-4 pb-4">
+        Developed by{" "}
+        <a
+          href="https://github.com/Brainless-Loco/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-primary transition"
+        >
+          Brainless-Loco
+        </a>
+      </div>
+
+
     </div>
   );
 }

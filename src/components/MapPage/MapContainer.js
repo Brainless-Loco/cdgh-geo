@@ -5,7 +5,7 @@ import { queryVirtuoso } from '../useHooks/queryVirtuoso';
 // eslint-disable-next-line
 import BasicMap from './BasicMap';
 // import { getLocalName } from './../utils/getLocalName';
-import { QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL } from '../utils/queries';
+import { QUERY_TO_GET_HEALTH_LEVEL_ANALYSIS, QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL } from '../utils/queries';
 
 function MapContainer({
   selectedLayer,
@@ -16,6 +16,7 @@ function MapContainer({
   selectedTypeOfAnalysis,
   selectedHealthLevel,
   selectedHealthLevelAttribute,
+  selectedHealthLevelInstance
 }) {
   const [geoJson, setGeoJson] = useState(null);
   const [mappedData, setMappedData] = useState([]);
@@ -31,10 +32,10 @@ function MapContainer({
 
 
   // Call for Measures
-  useEffect(() => { 
+  useEffect(() => {
     const ready = selectedLayer && selectedDataset && selectedGeographicLevel && selectedGeographicLevelAttribute && selectedMeasure
 
-    if (!ready || selectedTypeOfAnalysis !=='Measure') return;
+    if (!ready || selectedTypeOfAnalysis !== 'Measure') return;
 
     const QUERY = QUERY_TO_GET_MEASURE_FOR_GEOGRAPHIC_LEVEL(selectedDataset, selectedMeasure, selectedGeographicLevel, selectedGeographicLevelAttribute)
 
@@ -70,6 +71,74 @@ function MapContainer({
     fetchData();
   },
     [selectedDataset, selectedGeographicLevel, selectedGeographicLevelAttribute, selectedMeasure, geoJson, selectedLayer, selectedTypeOfAnalysis]);
+
+  useEffect(() => {
+    const ready =
+      selectedLayer &&
+      selectedDataset &&
+      selectedGeographicLevel &&
+      selectedGeographicLevelAttribute &&
+      selectedHealthLevel &&
+      selectedHealthLevelAttribute &&
+      selectedHealthLevelInstance &&
+      selectedMeasure;
+
+    if (!ready || selectedTypeOfAnalysis === 'Measure') return;
+
+    const QUERY = QUERY_TO_GET_HEALTH_LEVEL_ANALYSIS(
+      selectedDataset,
+      selectedMeasure,
+      selectedGeographicLevel,
+      selectedGeographicLevelAttribute,
+      selectedHealthLevel,
+      selectedHealthLevelAttribute,
+      selectedHealthLevelInstance
+    );
+
+    // console.log(QUERY)
+
+    const fetchData = async () => {
+      try {
+        const bindings = await queryVirtuoso(QUERY);
+
+        const regionStats = bindings.map((b) => ({
+          name: b.geographyDim_adm1Name.value,
+          category: b.BMICategory_BMICategoryName.value,
+          value: parseFloat(b.numOfPatient_sum.value),
+        }));
+
+        // Optional: do something with regionStats or visualize it
+        // console.log('Fetched regionStats with health & geo hierarchy:', regionStats);
+
+        // If mapping to geoJson needed:
+        const matched = geoJson?.features.map((feature) => {
+          const shapeName = feature.properties.shapeName;
+          const { bestMatch } = stringSimilarity.findBestMatch(
+            shapeName,
+            regionStats.map((r) => r.name)
+          );
+
+          const stat = regionStats.find((r) => r.name === bestMatch.target);
+          return {
+            id: feature.properties.shapeID,
+            value: bestMatch.rating > 0.6 ? stat?.value ?? 0 : 0,
+          };
+        });
+
+        setMappedData(matched || []);
+      } catch (e) {
+        console.error('Query/map fetch failed:', e);
+      }
+    };
+
+    fetchData();
+  }, 
+  [
+    selectedDataset, selectedGeographicLevel, selectedGeographicLevelAttribute,
+    selectedHealthLevel, selectedHealthLevelAttribute, selectedHealthLevelInstance,
+    geoJson, selectedLayer, selectedTypeOfAnalysis, selectedMeasure
+  ]);
+
 
 
 

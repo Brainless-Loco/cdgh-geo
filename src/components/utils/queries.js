@@ -161,3 +161,86 @@ WHERE {
 ORDER BY ?attributes
   `;
 }
+
+
+export const QUERY_TO_GET_HEALTH_LEVEL_ANALYSIS = (
+  selectedDataset,
+  selectedMeasure,
+  selectedGeographicLevel,
+  selectedGeographicLevelAttribute,
+  selectedHealthLevel,
+  selectedHealthLevelAttribute,
+  selectedHealthLevelInstance
+) => {
+  return `
+PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?geographyDim_adm1Name ?BMICategory_BMICategoryName (SUM(xsd:integer(?m1)) AS ?numOfPatient_sum)
+WHERE {
+  ?o a qb:Observation ;
+     qb:dataSet <${selectedDataset}> ;
+     <${selectedMeasure}> ?m1 ;
+     ?cuboidDimProperty ?cuboidEntity ;
+     ?healthDimProperty ?healthEntity .
+
+  # Exclude measure/dataset links from dim properties
+  FILTER(
+    ?cuboidDimProperty != qb:dataSet &&
+    ?cuboidDimProperty != <${selectedMeasure}> &&
+    ?healthDimProperty != qb:dataSet &&
+    ?healthDimProperty != <${selectedMeasure}>
+  )
+
+  # Match the geographic hierarchy up to 4 levels
+  {
+    ?cuboidEntity qb4o:memberOf <${selectedGeographicLevel}> .
+    BIND(?cuboidEntity AS ?geoFinal)
+  } UNION {
+    ?cuboidEntity ?rollup1 ?geo1 .
+    ?rollup1 a qb4o:RollupProperty .
+    ?geo1 qb4o:memberOf <${selectedGeographicLevel}> .
+    BIND(?geo1 AS ?geoFinal)
+  } UNION {
+    ?cuboidEntity ?rollup1 ?geo1 .
+    ?rollup1 a qb4o:RollupProperty .
+    ?geo1 ?rollup2 ?geo2 .
+    ?rollup2 a qb4o:RollupProperty .
+    ?geo2 qb4o:memberOf <${selectedGeographicLevel}> .
+    BIND(?geo2 AS ?geoFinal)
+  } UNION {
+    ?cuboidEntity ?rollup1 ?geo1 .
+    ?rollup1 a qb4o:RollupProperty .
+    ?geo1 ?rollup2 ?geo2 .
+    ?rollup2 a qb4o:RollupProperty .
+    ?geo2 ?rollup3 ?geo3 .
+    ?rollup3 a qb4o:RollupProperty .
+    ?geo3 qb4o:memberOf <${selectedGeographicLevel}> .
+    BIND(?geo3 AS ?geoFinal)
+  }
+
+  ?geoFinal <${selectedGeographicLevelAttribute}> ?geographyDim_adm1Name .
+
+  # Match the health hierarchy up to 2 levels
+  {
+    ?healthEntity ?hRollup1 ?healthFinal .
+    ?hRollup1 a qb4o:RollupProperty .
+    ?healthFinal qb4o:memberOf <${selectedHealthLevel}> .
+  } UNION {
+    ?healthEntity ?hRollup1 ?h1 .
+    ?hRollup1 a qb4o:RollupProperty .
+    ?h1 ?hRollup2 ?healthFinal .
+    ?hRollup2 a qb4o:RollupProperty .
+    ?healthFinal qb4o:memberOf <${selectedHealthLevel}> .
+  }
+
+  ?healthFinal <${selectedHealthLevelAttribute}> ?BMICategory_BMICategoryName .
+
+  FILTER(REGEX(?BMICategory_BMICategoryName, "${selectedHealthLevelInstance}", "i"))
+}
+GROUP BY ?geographyDim_adm1Name ?BMICategory_BMICategoryName
+ORDER BY ?geographyDim_adm1Name ?BMICategory_BMICategoryName
+  `;
+};
+

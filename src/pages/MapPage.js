@@ -40,6 +40,7 @@ function MapPage() {
     setSelectedTypeOfAnalysis('');
     setSelectedHealthLevel('');
     setSelectedHealthLevelAttribute('');
+    setSelectedHealthLevelInstance('')
     setSelectedMeasure('');
   }, [selectedLayer]);
 
@@ -57,22 +58,19 @@ function MapPage() {
     setSelectedTypeOfAnalysis('')
     setSelectedHealthLevel('')
     setSelectedHealthLevelAttribute('')
+    setSelectedHealthLevelInstance('')
   }, [selectedGeographicLevel]);
 
   useEffect(() => {
     setSelectedMeasure('');
     setSelectedHealthLevel('');
     setSelectedHealthLevelAttribute('');
-    setSelectedHealthLevelInstance([])
+    setSelectedHealthLevelInstance('')
   }, [selectedTypeOfAnalysis]);
-
-  useEffect(() => {
-    setSelectedHealthLevelAttribute('');
-  }, [selectedHealthLevel]);
 
   useEffect(()=>{
     setSelectedHealthLevelAttribute('')
-    setSelectedHealthLevelInstance([])
+    setSelectedHealthLevelInstance('')
   },[selectedHealthLevel])
 
 

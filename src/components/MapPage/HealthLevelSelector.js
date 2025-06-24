@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import LevelAttributeSelector from './LevelAttributeSelector';
 import LevelInstanceSelector from './LevelInstanceSelector';
 import { extractLevelInstances } from './../useHooks/extractLevelInstances';
@@ -23,8 +23,6 @@ function HealthLevelSelector({ levels, selectedHealthLevel, setSelectedHealthLev
         fetchInstances();
         // eslint-disable-next-line
     }, [selectedHealthLevel, selectedHealthLevelAttribute]);
-
-
 
     return (
         <div>
