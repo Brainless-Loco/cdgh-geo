@@ -62,9 +62,9 @@ function Sidebar({
 
 
   return (
-    <div className="flex flex-col gap-6 overflow-y-auto pb-5 h-[100vh]">
-      <h2 className="text-xl font-semibold">Map Controls</h2>
-      <div className='h-[90vh]'>
+    <div className="flex flex-col overflow-y-hidden h-[100vh]">
+      <div className='h-[95vh] px-2 overflow-auto py-2'>
+        <h2 className="text-xl font-semibold">Map Controls</h2>
         <LayerSelector onChange={onLayerChange} />
         <DatasetSelector
           selectedDataset={selectedDataset}
@@ -123,17 +123,18 @@ function Sidebar({
         )}
 
       </div>
-      <div className="text-xs text-center px-4 pb-4">
+      <div className="text-xs text-center px-3 bg-slate-200 h-[5vh] flex items-center justify-center">
         Developed by{" "}
         <a
           href="https://github.com/Brainless-Loco/"
           target="_blank"
           rel="noopener noreferrer"
-          className="underline hover:text-primary transition"
+          className="underline hover:text-primary transition ml-1"
         >
           Brainless-Loco
         </a>
       </div>
+
 
 
     </div>

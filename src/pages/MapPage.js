@@ -75,8 +75,8 @@ function MapPage() {
 
 
   return (
-    <div className="flex h-screen">
-      <div className="w-4/5">
+    <div className="flex h-screen overflow-x-hidden">
+      <div className="w-4/5 overflow-x-hidden">
         <MapContainer
           selectedLayer={selectedLayer}
           selectedDataset={selectedDataset}
@@ -89,7 +89,7 @@ function MapPage() {
           selectedHealthLevelInstance={selectedHealthLevelInstance}
         />
       </div>
-      <div className="w-1/5 bg-gray-100 p-4">
+      <div className="w-1/5 py-0 bg-gray-100">
         <Sidebar
           onLayerChange={setSelectedLayer}
 

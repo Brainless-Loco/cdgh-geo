@@ -143,7 +143,7 @@ function MapContainer({
 
 
   return (
-    <div className="w-full h-[100vh]">
+    <div className="w-full h-[100vh] overflow-y-hidden">
       {/* {geoJson && mappedData.length ==0 &&
         <BasicMap geoJson={geoJson}/>
       } */}
