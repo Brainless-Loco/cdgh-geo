@@ -71,7 +71,7 @@ ORDER BY ?regionName
 
 
 export const QUERY_TO_GET_LEVELS = (selectedDataset) => {
-    return `
+  return `
 PREFIX qb: <http://purl.org/linked-data/cube#>
 PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -110,7 +110,7 @@ ORDER BY ?level ?levelAtrribute`;
 }
 
 export const QUERY_TO_GET_MEASURES = (selectedDataset) => {
-    return `
+  return `
 PREFIX qb: <http://purl.org/linked-data/cube#>
 PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
 SELECT DISTINCT ?measure ?aggFunc
@@ -126,8 +126,8 @@ ORDER BY ?measure ?aggFunc
 `
 }
 
-export const QUERY_TO_GET_DATASETS = ()=>{
-    return `
+export const QUERY_TO_GET_DATASETS = () => {
+  return `
 PREFIX qb: <http://purl.org/linked-data/cube#>
 PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
 PREFIX cdw: <http://bike-csecu.com/datasets/covid/cdw#>
@@ -146,8 +146,8 @@ ORDER BY ?dataset
 }
 
 
-export const QUERY_TO_GET_LEVEL_INSTANCES = (selectedLevel, selectedLevelAttribute)=>{
- return `
+export const QUERY_TO_GET_LEVEL_INSTANCES = (selectedLevel, selectedLevelAttribute) => {
+  return `
 PREFIX qb4o: <http://purl.org/qb4olap/cubes#>
 
 SELECT DISTINCT ?attributes
@@ -223,6 +223,10 @@ WHERE {
   ?geoFinal <${selectedGeographicLevelAttribute}> ?geographyDim_adm1Name .
 
   # Match the health hierarchy up to 2 levels
+  {
+    ?healthEntity qb4o:memberOf <${selectedHealthLevel}> .
+    BIND(?healthEntity AS ?healthFinal)
+  } UNION 
   {
     ?healthEntity ?hRollup1 ?healthFinal .
     ?hRollup1 a qb4o:RollupProperty .

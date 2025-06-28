@@ -7,6 +7,22 @@ function HealthLevelSelector({ levels, selectedHealthLevel, setSelectedHealthLev
 
     const [levelInstances, setLevelInstances] = useState([])
 
+    const [filteredHealthLevels, setFilteredHealthLevels] = useState([])
+
+    useEffect(() => {
+        if (levels) {
+            const targetKeywords = ['category', 'group', 'sex'];
+            const filtered = Object.fromEntries(
+                Object.entries(levels).filter(([key, value]) =>
+                    targetKeywords.some(keyword =>
+                        value.fullURI?.toLowerCase().includes(keyword.toLowerCase())
+                    )
+                )
+            );
+            setFilteredHealthLevels(filtered);
+        }
+    }, [levels]);
+
     useEffect(() => {
 
         const fetchInstances = async () => {
@@ -33,7 +49,7 @@ function HealthLevelSelector({ levels, selectedHealthLevel, setSelectedHealthLev
                 className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
             >
                 <option value="">Select the Health level</option>
-                {Object.entries(levels).map(([uri, data]) => (
+                {Object.entries(filteredHealthLevels).map(([uri, data]) => (
                     <option key={uri} value={uri}>
                         {data.prefix}:{data.shortName}
                     </option>
