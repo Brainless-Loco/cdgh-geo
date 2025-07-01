@@ -123,7 +123,8 @@ function Sidebar({
         )}
 
       </div>
-      <div className="text-xs text-center px-3 bg-slate-200 h-[5vh] flex items-center justify-center">
+      {
+      /* <div className="text-xs text-center px-3 bg-slate-200 h-[5vh] flex items-center justify-center">
         Developed by{" "}
         <a
           href="https://github.com/Brainless-Loco/"
@@ -133,7 +134,8 @@ function Sidebar({
         >
           Brainless-Loco
         </a>
-      </div>
+      </div>*/
+      }
 
 
 
